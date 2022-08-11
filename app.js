@@ -1,5 +1,5 @@
 const express = require('express');
-const products = require('./routes/products');
+const productsRoute = require('./routes/products');
 
 const app = express();
 
@@ -8,7 +8,9 @@ app.get('/', (_request, response) => {
   response.send();
 });
 
-app.use('/products', products);
+app.use(express.json());
+
+app.use('/products', productsRoute);
 
 app.use((err, _req, res, _next) => {
   const { code, message } = err;
