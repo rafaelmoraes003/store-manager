@@ -72,4 +72,27 @@ describe('Testa a camada service de products', () => {
     });
 
   });
+
+  describe('Testa a inserção de um produto', () => {
+
+    before(async () => {
+      sinon.stub(productsModel, 'create').returns({
+        id: 1,
+        name: 'Nome #01',
+      });
+    });
+
+    after(async () => productsModel.create.restore());
+
+    it('Verifica se retorna um objeto', async () => {
+      const response = await productsService.create('Nome #01');
+      expect(response).to.be.an('object');
+    });
+
+    it('Verifica se o objeto tem as chaves code, id e name', async () => {
+      const response = await productsService.create('Nome #01');
+      expect(response).to.have.keys('code', 'id', 'name');
+    });
+
+  });
 });
