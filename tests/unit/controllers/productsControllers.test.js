@@ -3,14 +3,22 @@ const sinon = require('sinon');
 const productsService = require('../../../services/productsService');
 const productsController = require('../../../controllers/productsController');
 
-const serverErrorMessage = { code: 500, message: 'Server error.' };
+const req = {};
+const res = {};
+let next = new Function;
+
+const serverErrorTest = (method) => {
+  const serverErrorMessage = { code: 500, message: 'Server error.' };
+
+  it('Verifica se chama o next com erro', async () => {
+    await productsController[method](req, res, next);
+    expect(next.calledWith(serverErrorMessage)).to.be.true;
+  });
+}
 
 describe('Testa a camada controller de products', () => {
 	describe('Testa a busca por todos os produtos', () => {
 		describe('Testa em caso de sucesso', () => {
-			const req = {};
-			const res = {};
-			const next = () => {};
 
 			before(async () => {
 				sinon.stub(productsService, 'getAll').resolves({
@@ -31,9 +39,6 @@ describe('Testa a camada controller de products', () => {
 		});
 
 		describe('Testa em caso de erro no servidor', () => {
-			const req = {};
-			const res = {};
-			let next = new Function;
 
 			before(async () => {
 				sinon.stub(productsService, 'getAll').rejects();
@@ -45,20 +50,14 @@ describe('Testa a camada controller de products', () => {
 
 			after(async () => productsService.getAll.restore());
 
-			it('Verifica se retorna o status 500', async () => {
-				await productsController.getAll(req, res, next);
-				expect(next.calledWith(serverErrorMessage)).to.be.true;
-			});
+      serverErrorTest('getAll');
 		});
 	});
 
 	describe('Testa a busca de produto por id', () => {
 		describe('Testa em caso de sucesso', () => {
 
-			const req = {};
 			req.params = { id: 1 }
-			const res = {};
-			const next = new Function;
 
 			before(async () => {
 				sinon.stub(productsService, 'getById').resolves({
@@ -81,10 +80,7 @@ describe('Testa a camada controller de products', () => {
 
 		describe('Testa em caso de falha', () => {
 
-			const req = {};
 			req.params = { id: 999 }
-			const res = {};
-			const next = new Function;
 
 			before(async () => {
 				sinon.stub(productsService, 'getById').resolves({
@@ -109,10 +105,6 @@ describe('Testa a camada controller de products', () => {
 
 		describe('Testa em caso de falha no servidor', () => {
 
-			const req = {};
-			const res = {};
-			let next = new Function;
-
 			before(async () => {
 				sinon.stub(productsService, 'getById').rejects();
 				req.params = { id: 999 };
@@ -123,10 +115,47 @@ describe('Testa a camada controller de products', () => {
 
 			after(async () => productsService.getById.restore());
 
-			it('Verifica se chama o next com erro', async () => {
-				await productsController.getById(req, res, next);
-				expect(next.calledWith(serverErrorMessage)).to.be.true;
-			});
+      serverErrorTest('getById');
 		});
-	});
+  });
+  
+  describe('Testa a criação de um produto', () => {
+    
+    describe('Testa caso de sucesso', () => {
+
+      before(async () => {
+        sinon.stub(productsService, 'create').resolves({
+          code: 201,
+          id: 1,
+          name: 'Produto #01',
+        });
+
+        req.body = { name: 'Produto #01' };
+
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+      });
+
+      after(async () => productsService.create.restore());
+
+      it('Verifica se chama com status 201', async () => {
+        await productsController.create(req, res, next);
+        expect(res.status.calledWith(201)).to.be.true;
+      });
+    });
+
+    describe('Testa em caso de falha no servidor', () => {
+
+      before(async () => {
+        sinon.stub(productsService, 'create').rejects();
+        req.body = { name: 'Produto #01' };
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+      });
+
+      after(async () => productsService.create.restore());
+
+      serverErrorTest('create');
+    });
+  });
 });
