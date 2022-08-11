@@ -85,4 +85,24 @@ describe('Testa a camada model de products', () => {
 
   });
 
+  describe('Testa a criação de um produto', () => {
+
+    before(async () => {
+      sinon.stub(connection, 'execute').resolves([{ insertId: 1 }]);
+    });
+
+    after(async () => connection.execute.restore());
+
+    it('Verifica se retornaum objeto', async () => {
+      const response = await productsModel.create('celular');
+      expect(response).to.be.an('object');
+    });
+
+    it('Verifica se retorna um objeto com chaves id e name', async () => {
+      const response = await productsModel.create('celular');
+      expect(response).to.have.keys('id', 'name');
+    });
+
+  });
+
 });
