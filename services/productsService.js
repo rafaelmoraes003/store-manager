@@ -30,9 +30,21 @@ const update = async (id, name) => {
   return { code: 200, data: response };
 };
 
+const exclude = async (id) => {
+  const checkIfProductExists = await productModel.getById(id);
+
+  if (!checkIfProductExists) {
+    return { error: { code: 404, message: 'Product not found' } };
+  }
+
+  await productModel.exclude(id);
+  return { code: 204 };
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   update,
+  exclude,
 };
