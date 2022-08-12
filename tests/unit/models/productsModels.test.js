@@ -105,4 +105,18 @@ describe('Testa a camada model de products', () => {
 
   });
 
+  describe('Testa a atualização de um produto', () => {
+
+    before(async () => {
+      sinon.stub(connection, 'execute').resolves();
+    });
+
+    after(async () => connection.execute.restore());
+
+    it('Verifica se retona um objeto', async () => {
+      const response = await productsModel.update(1, 'celular');
+      expect(response).to.be.an('object');
+    });
+  });
+
 });
