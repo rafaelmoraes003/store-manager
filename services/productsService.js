@@ -41,10 +41,21 @@ const exclude = async (id) => {
   return { code: 204 };
 };
 
+const getByName = async (name) => {
+  if (!name.length) {
+    const emptyNameResponse = await productModel.getAll();
+    return { code: 200, data: emptyNameResponse };
+  }
+  
+  const result = await productModel.getByName(name);
+  return { code: 200, data: result };
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   update,
   exclude,
+  getByName,
 };
