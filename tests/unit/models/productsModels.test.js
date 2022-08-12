@@ -119,4 +119,19 @@ describe('Testa a camada model de products', () => {
     });
   });
 
+  describe('Testa a exclusão de um produto', () => {
+
+    before(async () => {
+      sinon.stub(connection, 'execute').resolves();
+    });
+
+    after(async () => connection.execute.restore());
+
+    it('Verifica se a query é executada', async () => {
+      const response = await productsModel.exclude(1);
+      expect(response).to.be.an('object');
+    });
+
+  });
+
 });
