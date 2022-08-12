@@ -218,4 +218,61 @@ describe('Testa a camada controller de products', () => {
       serverErrorTest('update');
     });
   });
+
+  describe('Testa a exclusão de um produto', () => {
+    describe('Testa em caso de sucesso', () => {
+
+      before(async () => {
+        sinon.stub(productsService, 'exclude').resolves({
+          code: 204,
+        });
+
+        req.params = { id: 1 };
+        res.status = sinon.stub().returns(res);
+        res.end = sinon.stub().returns();
+      });
+
+      after(async () => productsService.exclude.restore());
+
+      it('Verifica se o res.status é chamado com 204', async () => {
+        await productsController.exclude(req, res, next);
+        expect(res.status.calledWith(204)).to.be.true;
+      });
+    });
+
+    describe('Testa em caso de falha', () => {
+
+      before(async () => {
+        sinon.stub(productsService, 'exclude').resolves({
+          error: {
+            code: 404,
+            message: '../',
+          },
+        });
+
+        req.params = { id: 1 };
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+      });
+
+      after(async () => productsService.exclude.restore());
+
+      it('Verifica se o res.status é chamado com 204', async () => {
+        await productsController.exclude(req, res, next);
+        expect(res.status.calledWith(404)).to.be.true;
+      });
+    });
+
+    describe('Testa em caso de falha so servidor', () => {
+
+      before(async () => {
+        sinon.stub(productsService, 'exclude').rejects();
+        next = sinon.stub().returns();
+      });
+
+      after(async () => productsService.exclude.restore());
+
+      serverErrorTest('exclude');
+    });
+  });
 });
