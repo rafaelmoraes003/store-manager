@@ -6,6 +6,7 @@ const products = express.Router();
 
 products.get('/', productsController.getAll);
 products.get('/:id', productsController.getById);
+products.delete('/:id', productsController.exclude);
 
 products.use(validateName);
 
