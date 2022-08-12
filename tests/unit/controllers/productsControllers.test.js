@@ -158,4 +158,63 @@ describe('Testa a camada controller de products', () => {
       serverErrorTest('create');
     });
   });
+
+  describe('Testa a atualização de um produto', () => {
+    describe('Testa em caso de sucesso', () => {
+
+      before(async () => {
+        sinon.stub(productsService, 'update').resolves({
+          code: 200,
+          data: {},
+        });
+
+        req.params = { id: 1 };
+        req.body = { name: 'Produto #01' };
+        req.status = sinon.stub().returns(res);
+        req.status = sinon.stub().returns();
+      });
+
+      after(async () => productsService.update.restore());
+
+      it('Verifica se o res.status é chamado com 200', async () => {
+        await productsController.update(req, res, next);
+        expect(res.status.calledWith(200)).to.be.true;
+      });
+    });
+
+    describe('Testa em caso de falha', () => {
+
+      before(async () => {
+        sinon.stub(productsService, 'update').resolves({
+          error: {
+            code: 404,
+            message: '../',
+          }
+        });
+
+        req.params = { id: 999 };
+        req.body = { name: 'Produto #00x' };
+        req.status = sinon.stub().returns(res);
+        req.status = sinon.stub().returns();
+      });
+
+      after(async () => productsService.update.restore());
+
+      it('Verifica se o res.status é chamado com 200', async () => {
+        await productsController.update(req, res, next);
+        expect(res.status.calledWith(404)).to.be.true;
+      });
+    });
+
+    describe('Testa em caso de falha so servidor', () => {
+
+      before(async () => {
+        sinon.stub(productsService, 'update').rejects();
+      });
+
+      after(async () => productsService.update.restore());
+
+      serverErrorTest('update');
+    });
+  });
 });
