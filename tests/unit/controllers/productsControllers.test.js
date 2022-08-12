@@ -210,6 +210,7 @@ describe('Testa a camada controller de products', () => {
 
       before(async () => {
         sinon.stub(productsService, 'update').rejects();
+        next = sinon.stub().returns();
       });
 
       after(async () => productsService.update.restore());
