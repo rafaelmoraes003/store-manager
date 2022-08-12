@@ -141,4 +141,46 @@ describe('Testa a camada service de products', () => {
 
     });
   });
+
+  describe('Testa a exclusão de um produto', () => {
+    describe('Testa em caso de sucesso', () => {
+
+      before(async () => {
+        sinon.stub(productsModel, 'getById').resolves({
+          true: true,
+        });
+
+        sinon.stub(productsModel, 'exclude').resolves();
+      });
+
+      after(async () => {
+        productsModel.getById.restore();
+        productsModel.exclude.restore();
+      });
+
+      it('Verifica se retona um obejto com code 204', async () => {
+        const response = await productsService.exclude(1);
+        expect(response).to.be.an('object');
+        expect(response).to.have.key('code');
+      });
+    });
+
+    describe('Testa em caso de erro', () => {
+
+      before(async () => {
+        sinon.stub(productsModel, 'getById').resolves(undefined);
+      });
+
+      after(async () => {
+        productsModel.getById.restore();
+      });
+
+      it('Verifica se retona um obejto de erro', async () => {
+        const response = await productsService.exclude(1);
+        expect(response).to.be.an('object');
+        expect(response).to.have.key('error');
+      });
+
+    });
+  });
 });
