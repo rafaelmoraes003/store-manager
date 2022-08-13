@@ -275,4 +275,39 @@ describe('Testa a camada controller de products', () => {
       serverErrorTest('exclude');
     });
   });
+
+  describe('Testa a busca de produto por nome', () => {
+    describe('Testa em caso de sucesso', () => {
+
+      before(async () => {
+        sinon.stub(productsService, 'getByName').resolves({
+          code: 200,
+          data: [{}],
+        });
+
+        req.query = { q: 'Produto #01' };
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns(res);
+      });
+
+      after(async () => productsService.getByName.restore());
+
+      it('Verifica se chama o res.status com 200', async () => {
+        await productsController.getByName(req, res, next);
+        expect(res.status.calledWith(200)).to.be.true;
+      });
+    });
+
+    describe('Testa em caso de sucesso', () => {
+
+      before(async () => {
+        sinon.stub(productsService, 'getByName').rejects();
+        next = sinon.stub().returns();
+      });
+
+      after(async () => productsService.getByName.restore());
+
+      serverErrorTest('getByName');
+    });
+  });
 });

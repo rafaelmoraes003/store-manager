@@ -68,7 +68,6 @@ const getByName = async (req, res, next) => {
     const { code, data } = await productsService.getByName(q);
     return res.status(code).json(data);
   } catch (error) {
-    console.log(error);
     next(serverErrorMessage);
   }
 };
