@@ -183,4 +183,42 @@ describe('Testa a camada service de products', () => {
 
     });
   });
+
+  describe('Testa a busca de um produto por nome', () => {
+    describe('Testa caso passo um nome válido', () => {
+
+      before(async () => {
+        sinon.stub(productsModel, 'getByName').resolves([{
+          id: 1,
+          name: 'Produto #01'
+        }]);
+      });
+
+      after(async () => productsModel.getByName.restore());
+
+      it('Verifica se retorna um objeto', async () => {
+        const response = await productsService.getByName('Produto');
+        expect(response).to.have.keys('code', 'data');
+      });
+
+    });
+
+    describe('Testa caso passo um nome inválido', () => {
+
+      before(async () => {
+        sinon.stub(productsModel, 'getAll').resolves([{
+          id: 1,
+          name: 'Produto #01'
+        }]);
+      });
+
+      after(async () => productsModel.getAll.restore());
+
+      it('Verifica se retorna um objeto', async () => {
+        const response = await productsService.getByName('');
+        expect(response).to.have.keys('code', 'data');
+      });
+
+    });
+  });
 });
