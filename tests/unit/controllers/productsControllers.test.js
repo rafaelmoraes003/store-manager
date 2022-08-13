@@ -298,7 +298,7 @@ describe('Testa a camada controller de products', () => {
       });
     });
 
-    describe('Testa em caso de sucesso', () => {
+    describe('Testa em caso de falha no servidor', () => {
 
       before(async () => {
         sinon.stub(productsService, 'getByName').rejects();
