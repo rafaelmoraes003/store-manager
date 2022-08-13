@@ -1,22 +1,13 @@
 const express = require('express');
-const productsRoute = require('./routes/products');
-const salesRoute = require('./routes/sales');
+// const productsRoute = require('./routes/products');
+// const salesRoute = require('./routes/sales');
 
 const app = express();
+app.use(express.json());
 
 // não remova esse endpoint, é para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.send();
-});
-
-app.use(express.json());
-
-app.use('/products', productsRoute);
-app.use('/sales', salesRoute);
-
-app.use((err, _req, res, _next) => {
-  const { code, message } = err;
-  return res.status(code).json({ message });
 });
 
 // não remova essa exportação, é para o avaliador funcionar
