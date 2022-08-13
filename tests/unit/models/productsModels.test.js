@@ -134,4 +134,22 @@ describe('Testa a camada model de products', () => {
 
   });
 
+  describe('Testa a busca de produto por nome', () => {
+
+    before(async () => {
+      sinon.stub(connection, 'execute').resolves([[{
+        id: 1,
+        name: 'Produto #01',
+      }]]);
+    });
+
+    after(async () => connection.execute.restore());
+
+    it('Verifica se retorna um array de objetos', async () => {
+      const response = await productsModel.getByName('Produto');
+      expect(response).to.be.an('array');
+      expect(response[0]).to.be.an('object');
+      expect(response[0]).to.have.keys('id', 'name');
+    });
+  });
 });
