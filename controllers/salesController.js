@@ -27,7 +27,6 @@ const createSale = async (req, res, next) => {
     const { code, data } = await salesService.createSale(req.body);
     return res.status(code).json(data);
   } catch (error) {
-    console.log(error.message);
     next(serverErrorMessage);
   }
 };
@@ -54,7 +53,6 @@ const updateSale = async (req, res, next) => {
     }
     return res.status(code).json(data);
   } catch (error) {
-    console.log(error.message);
     next(error);
   }
 };
