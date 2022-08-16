@@ -7,7 +7,7 @@ const sales = express.Router();
 
 sales.get('/', salesController.getAll);
 sales.get('/:id', salesController.getById);
-// sales.delete('/:id', salesController.deleteSale);
+sales.delete('/:id', salesController.deleteSale);
 
 sales.use(
   validateProductId.validateProductId,
