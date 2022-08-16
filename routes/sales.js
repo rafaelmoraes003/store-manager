@@ -17,6 +17,6 @@ sales.use(
 );
 
 sales.post('/', salesController.createSale);
-// sales.put('/:id', salesController.updateSale);
+sales.put('/:id', salesController.updateSale);
 
 module.exports = sales;
