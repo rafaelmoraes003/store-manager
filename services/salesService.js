@@ -42,9 +42,31 @@ const deleteSale = async (saleId) => {
   return { code: 204 };
 };
 
+const updateSale = async (saleId, saleArr) => {
+  const doesSaleIdExists = await salesModel.getById(saleId);
+
+  if (!doesSaleIdExists.length) {
+    return { error: { code: 404, message: 'Sale not found' } };
+  }
+
+  await salesModel.deleteSalesProducts(saleId);
+
+  await Promise.all(saleArr.map(({ productId, quantity }) => (
+    salesModel.createSaleProduct(saleId, productId, quantity)
+  )));
+
+  const response = {
+    saleId,
+    itemsUpdated: saleArr,
+  };
+
+  return { code: 200, data: response };
+};
+
 module.exports = {
   getAll,
   getById,
   createSale,
   deleteSale,
+  updateSale,
 };
