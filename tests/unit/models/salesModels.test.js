@@ -54,4 +54,66 @@ describe('Testa a camada model de sales', () => {
       expect(response[0]).to.be.an('object');
     });
   });
+
+  describe('Testa a criação de um venda na tabela sales', () => {
+
+    before(async () => {
+      sinon.stub(connection, 'execute').resolves([{
+        insertId: 1,
+      }]);
+    });
+
+    after(async () => connection.execute.restore());
+
+    it('Verifica se retorna o insertId', async () => {
+      const { id } = await salesModel.createSale();
+      expect(id).equal(1);
+    });
+
+  });
+
+  describe('Testa a criação de um venda na tabela sales_products', () => {
+
+    before(async () => {
+      sinon.stub(connection, 'execute').resolves();
+    });
+
+    after(async () => connection.execute.restore());
+
+    it('Verifica se retorna o insertId', async () => {
+      const response = await salesModel.createSaleProduct();
+      expect(response).to.be.undefined;
+    });
+
+  });
+
+  describe('Testa excluir uma venda da tabela sales', () => {
+
+    before(async () => {
+      sinon.stub(connection, 'execute').resolves();
+    });
+
+    after(async () => connection.execute.restore());
+
+    it('Verifica se retorna o insertId', async () => {
+      const response = await salesModel.deleteSale();
+      expect(response).to.be.undefined;
+    });
+
+  });
+
+  describe('Testa excluir uma venda da tabela sales_products', () => {
+
+    before(async () => {
+      sinon.stub(connection, 'execute').resolves();
+    });
+
+    after(async () => connection.execute.restore());
+
+    it('Verifica se retorna o insertId', async () => {
+      const response = await salesModel.deleteSalesProducts();
+      expect(response).to.be.undefined;
+    });
+
+  });
 });
