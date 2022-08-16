@@ -30,8 +30,21 @@ const createSale = async (saleArr) => {
   return { code: 201, data: response };
 };
 
+const deleteSale = async (saleId) => {
+  const doesSaleIdExists = await salesModel.getById(saleId);
+
+  if (!doesSaleIdExists.length) {
+    return { error: { code: 404, message: 'Sale not found' } };
+  }
+
+  await salesModel.deleteSale(saleId);
+
+  return { code: 204 };
+};
+
 module.exports = {
   getAll,
   getById,
   createSale,
+  deleteSale,
 };
