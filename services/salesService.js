@@ -15,7 +15,23 @@ const getById = async (id) => {
   return { code: 200, data: sales };
 };
 
+const createSale = async (saleArr) => {
+  const { id } = await salesModel.createSale();
+  
+  await Promise.all(saleArr.map(({ productId, quantity }) => (
+    salesModel.createSaleProduct(id, productId, quantity)
+  )));
+
+  const response = {
+    id,
+    itemsSold: saleArr,
+  };
+
+  return { code: 201, data: response };
+};
+
 module.exports = {
   getAll,
   getById,
+  createSale,
 };
